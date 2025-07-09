@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discussão de Relacionamento</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .hero-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    #resultado {
+      display: none;
+    }
+    .modal-content {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      padding: 2rem;
+    }
+    .animacao-pensando {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto 1rem;
+      animation: flutuar 3s ease-in-out infinite;
+    }
+    .mensagem-analise {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #495057;
+      margin-bottom: 0.5rem;
+      animation: fadeIn 1.8s ease-in-out infinite alternate;
+    }
+    #falaCupido {
+      font-style: italic;
+      color: #dc3545;
+      font-size: 1.1rem;
+      margin-top: 15px;
+      animation: fadeIn 1.2s ease-in-out;
+      min-height: 1.2em;
+    }
+    @keyframes flutuar {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+
+.resultado-box {
+  background-color: #fff3f4;
+  border-left: 5px solid #dc3545;
+  border-radius: 15px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 1s ease-in-out;
+}
+.resultado-box h3 {
+  color: #dc3545;
+  font-weight: bold;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+.resultado-box p {
+  font-size: 1.1rem;
+  color: #212529;
+}
+.resultado-box .cupido-msg {
+  font-style: italic;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.contador-casais {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #dc3545;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-left: 5px solid #dc3545;
+  z-index: 10000;
+  max-width: 270px;
+  line-height: 1.3;
+  pointer-events: none; /* evita cliques acidentais */
+}
+
+
+  </style>
+</head>
+<body>
+    <div class="alert alert-light border-start border-2 border-danger shadow-sm px-4 py-3">
+        <h5 class="fw-semibold mb-0 text-dark">
+          💘 Casais “reavaliados” com sucesso: 
+          <span id="contadorCasais" class="text-danger fw-bold fs-6"></span>
+        </h5>
+        <small class="text-muted fst-italic">A gente jura que a intenção era ajudar...</small>
+      </div>
+      
+      
+      
+<div class="container py-5">
+  <h1 class="text-center mb-4">Discussão de Relacionamento</h1>
+
+  <div class="text-center">
+    <img id="imagemRelacao" src="0.png" alt="Imagem da relação" class="hero-image">
+  </div>
+
+  <form id="formDiscussao">
+    <div class="row justify-content-center mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Tipo de Relação</label>
+        <select id="tipoRelacao" class="form-select text-center" required>
+          <option value="" disabled selected>Selecione</option>
+          <option value="casado">Casados</option>
+          <option value="namorado">Namorados</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-3 justify-content-center">
+      <div class="col-md-4">
+        <label class="form-label">Nome do Participante 1</label>
+        <input type="text" id="nome1" class="form-control" required placeholder="Ex: João">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Nome do Participante 2</label>
+        <input type="text" id="nome2" class="form-control" required placeholder="Ex: Maria">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Qual foi o motivo da discussão?</label>
+      <textarea id="questao" class="form-control" required></textarea>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Opinião do Participante 1</label>
+        <textarea id="opiniao1" class="form-control" required></textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Opinião do Participante 2</label>
+        <textarea id="opiniao2" class="form-control" required></textarea>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-danger btn-lg confete">🎯 JULGAR AGORA</button>
+    </div>
+  </form>
+
+  <div id="resultado" class="resultado-box">
+    <h3 class="text-center">🔨 Decisão do Cupido</h3>
+    <p id="justificativaCupido" class="cupido-msg text-center"></p>
+    <p class="text-center"><strong>🏅 Quem venceu:</strong> <span id="vencedorNome"></span></p>
+    <p class="text-center"><strong>💬 Opinião vencedora:</strong> <span id="opiniaoVencedora"></span></p>
+    <div class="text-center mt-4">
+      <button class="btn btn-secondary" onclick="refazerDiscussao()">🔄 Refazer Discussão</button>
+    </div>
+  </div>
+  
+
+
+
+<div class="modal fade" id="modalProcessando" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img src="2.png" alt="Cupido pensando" class="animacao-pensando">
+        <div class="mt-3">
+          <p class="mensagem-analise">📚 Consultando o manual de DRs universais...</p>
+          <p id="falaCupido">💬 “...”</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-light border-top shadow py-4 mt-5">
+    <div class="container text-center">
+      <p class="mb-2 fw-medium text-muted">
+        Conheça o desenvolvedor
+      </p>
+      <a href="https://www.instagram.com/wallisoon.costaa?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
+         class="text-decoration-none d-inline-flex align-items-center gap-2 text-dark fw-semibold"
+         target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-instagram fs-5"></i> @wallisoon.costaa
+      </a>
+    </div>
+  </footer>
+ 
+  
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const contador = document.getElementById('contadorCasais');
+      const widget = document.createElement('div');
+      widget.className = 'counterapi';
+      widget.setAttribute('key', 'reconciliacoes');
+      widget.setAttribute('startNumber', '0');
+      widget.setAttribute('behavior', 'view');
+      widget.style.display = 'inline';
+    
+      contador.replaceWith(widget);
+    
+      const script = document.createElement('script');
+      script.src = 'https://counterapi.com/c.js';
+      script.async = true;
+      document.body.appendChild(script);
+    });
+    </script>
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const pronome = {
+  masculino: 'ELE',
+  feminino: 'ELA',
+  outro: 'ELU'
+};
+
+const frasesCupido = [
+    "Hmmm… isso aí tá parecendo birra.",
+    "Confesso que já vi DR melhor…",
+    "Será que dá tempo de sair correndo?",
+    "Já vou pegar meu balde de pipoca!",
+    "Discussão digna de Oscar.",
+    "Essa foi pior que dizer ‘tanto faz’...",
+    "Só um milagre salva essa treta.",
+    "Pelo visto, hoje dorme no sofá.",
+    "Hmmm... isso aí tá parecendo recalque de 2022...",
+    "Tem gente aqui querendo ter razão, não paz!",
+    "Já tentaram desligar e ligar a relação de novo?",
+    "Pelo histórico, isso aí é bug do casal mesmo.",
+    "Eu julgaria, mas não sou terapeuta... só um Cupido cansado.",
+    "Isso aí cheira a DR reciclada do mês passado.",
+    "Ih... se depender de carinho, já deu timeout.",
+    "Atenção: argumento inválido detectado!",
+    "Eu devia lançar um patch pra esse relacionamento.",
+    "Mais fácil entender nota fiscal do que esse casal.",
+    "Nem Freud explica essa DR...",
+    "Já tô chamando o advogado do divórcio!",
+    "Isso aí foi golpe baixo, confesso.",
+    "Desenterrar conversa de 2018? Clássico!",
+    "Me tirem daqui, por favor…",
+    "Essa discussão tem mais plot twist que novela mexicana.",
+    "Começou com louça e terminou no passado!",
+    "Alguém aí já tentou dizer 'desculpa'?",
+    "Cupido é amor, não psicólogo!",
+    "Pausa pra respirar. Isso aqui tá pesado.",
+    "Estou reconsiderando minha carreira de Cupido…",
+    "DR com argumentos do TikTok? Socorro!",
+    "Se amor fosse lógica, esse casal tava em loop infinito.",
+    "Só observo… e julgo. Muito.",
+    "Plot twist: ambos estão errados!",
+    "Já vi casal brigar até por miojo… vocês superaram.",
+    "O Cupido chora em silêncio.",
+    "Com esse nível de passivo-agressividade, já é guerra fria.",
+    "Isso tá parecendo reality show sem prêmio.",
+    "Alguém traz o VAR do amor, por favor.",
+    "Alguém aí já tentou amar em silêncio? Não? Percebi.",
+    "DR com pausa dramática... tá virando teatro.",
+    "Isso virou TED Talk ou ainda é treta?",
+    "Nível de rancor: salvou prints desde 2019.",
+    "Já tentaram discutir com fone de ouvido? Recomendo.",
+    "Relacionamento ou escape room emocional?",
+    "Briga boa é aquela que começa e termina com pizza. Cadê a pizza?",
+    "Isso aqui tá mais tenso que grupo de família no Natal.",
+    "Dá tempo de fingir queda de conexão?",
+    "Essa discussão já tá em looping… reinicia, por favor!",
+    "Nem o algoritmo do amor entende esse casal.",
+    "Com esse histórico, vou bloquear os dois!",
+    "Só o Pix da paz salva agora.",
+    "Se amor fosse Wi-Fi, essa conexão já teria caído.",
+    "Discussão longa... resultado curto: ninguém tem razão!",
+    "Se for pra dormir brigado, que seja com o ventilador ligado.",
+    "Mais chance de reconciliação em Mercúrio retrógrado!",
+    "O amor é cego, mas eu tô vendo tudo."
+  ];
+
+  function gerarFrasesAleatorias(qtd) {
+  const frasesTemp = [...frasesCupido];
+  const selecionadas = [];
+  for (let i = 0; i < qtd; i++) {
+    const idx = Math.floor(Math.random() * frasesTemp.length);
+    selecionadas.push(frasesTemp.splice(idx, 1)[0]);
+  }
+  return selecionadas;
+}
+
+let trocaFalaInterval;
+
+document.getElementById('formDiscussao').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const modal = new bootstrap.Modal(document.getElementById('modalProcessando'));
+  modal.show();
+
+  const frasesRodada = gerarFrasesAleatorias(7);
+  let index = 0;
+  document.getElementById('falaCupido').textContent = `💬 "${frasesRodada[index]}"`;
+  trocaFalaInterval = setInterval(() => {
+    index++;
+    if (index >= frasesRodada.length) return;
+    document.getElementById('falaCupido').textContent = `💬 "${frasesRodada[index]}"`;
+  }, 3000);
+
+// Lista de justificativas do Cupido
+const justificativasCupido = [
+  "Pelo menos alguém tentou argumentar sem levantar o tom de voz…",
+  "Escolhi quem usou menos ironia e mais coerência (milagre!).",
+  "Pontuação extra por não usar o clássico ‘você sempre faz isso!’",
+  "Fui no menos passivo-agressivo. Por pouco.",
+  "Confiei na energia. Essa pessoa pareceu menos vingativa.",
+  "Porque sinceramente... o outro argumento parecia reply de Twitter.",
+  "Essa opinião me deu menos dor de cabeça. Literalmente.",
+  "Foi no feeling. Juro que joguei justo (ou quase).",
+  "Na dúvida, fui por quem não usou sarcasmo em CAPS LOCK.",
+  "Me ganhou com menos indiretas e mais argumentos. Raridade!",
+  "Não gostei de nenhum, mas alguém tinha que vencer…",
+  "Ganhou por W.O. emocional. O outro nem tentou direito.",
+  "Essa pessoa usou menos ‘você nunca’ e mais ‘vamos resolver’.",
+  "Porque o outro lado parecia só querer ganhar, não conversar.",
+  "Votei em quem menos citou tretas antigas. Parabéns por tentar esquecer 2017.",
+  "Ganhou na base do equilíbrio emocional (ou na falta de concorrência).",
+  "Foi menos grito e mais argumento. Cupido aprova.",
+  "Não teve mimimi, só drama controlado. Venceu.",
+  "Quem não usou emojis passivo-agressivos no discurso merece respeito.",
+  "Ganhou por apresentar a treta como se fosse um TED Talk. Palmas!",
+  "A decisão foi difícil. Mas o outro parecia um print do Reclame Aqui.",
+  "Pelo menos essa pessoa sabia a diferença entre discutir e gritar.",
+  "Ganhou porque não usou “se você me amasse de verdade…” como argumento.",
+  "Menos drama, mais gramática correta. Isso conta pontos.",
+  "Essa pessoa mencionou terapia. Já é metade do caminho.",
+  "Preferi quem usou vírgulas. O outro usou ameaças.",
+  "Teve argumento, teve maturidade… quase me emocionei.",
+  "Foi quem menos usou “eu tô calmo(a)” enquanto surtava.",
+  "Na disputa entre razão e gritaria, venci eu. Escolhi o menos cansativo.",
+  "Escolhi o menos culpado só de olhar. Cupido tem faro clínico.",
+  "O outro argumentou com memes e gritos. Tive que ignorar.",
+  "A argumentação parecia áudio de 9 minutos. Mas fez sentido.",
+  "Esse aqui não usou “kkkkk” no meio de uma briga séria. Venceu.",
+  "Dei a vitória pra quem não começou com “primeiramente…” e esqueceu o resto.",
+  "Não citou a mãe do outro. Já é um avanço civilizatório.",
+  "Menos chilique, mais clareza. Cupido valoriza isso.",
+  "O argumento parecia pauta de podcast de casal. Funcionou.",
+  "Essa pessoa lembrou do que estavam discutindo. Isso já é raro.",
+  "Porque me deu preguiça do outro. E preguiça também decide.",
+
+];
+
+  setTimeout(() => {
+    clearInterval(trocaFalaInterval);
+    modal.hide();
+
+    const nome1 = document.getElementById('nome1').value.trim();
+    const nome2 = document.getElementById('nome2').value.trim();
+    const opiniao1 = document.getElementById('opiniao1').value;
+    const opiniao2 = document.getElementById('opiniao2').value;
+
+    const ganhador = Math.random() < 0.5 ? 1 : 2;
+    const nome = ganhador === 1 ? nome1 : nome2;
+    const opiniao = ganhador === 1 ? opiniao1 : opiniao2;
+
+    const justificativa = justificativasCupido[Math.floor(Math.random() * justificativasCupido.length)];
+    document.getElementById('justificativaCupido').textContent = `${justificativa}`;
+
+    document.getElementById('vencedorNome').textContent = nome;
+    document.getElementById('opiniaoVencedora').textContent = opiniao;
+    document.getElementById('resultado').style.display = 'block';
+    window.scrollTo({ top: document.getElementById('resultado').offsetTop, behavior: 'smooth' });
+  }, 21000);
+});
+
+function refazerDiscussao() {
+  document.getElementById('formDiscussao').reset();
+  document.getElementById('imagemRelacao').src = '0.png'; // Imagem padrão fixa
+  document.getElementById('resultado').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+</script>
+</body>
+</html>
